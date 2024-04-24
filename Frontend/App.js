@@ -1,14 +1,18 @@
+//importing neccessary function componenets, and axios library
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import axios from 'axios';
 
+//the main function component where we create axios post function, ui elements and more
 function App() {
+  //declaring use state variables to use in functions, elements and more
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [firstValue, setFirstValue] = useState('');
   const [secondValue, setSecondValue] = useState('');
   const [responseData, setResponseData] = useState(null); // State to hold response data
 
+  //adding items and values to those items through label to our drop down value that will send the operation to server
   const items = [
     { label: 'Plus', value: '+' },
     { label: 'Minus', value: '-' },
@@ -16,34 +20,40 @@ function App() {
     { label: 'Divide', value: '/' }
   ];
 
+  //this function open the drop down button and shows all the item saved
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
+  //this function opens the drop down button and let us select an item for all the items
   const handleSelectItem = (item) => {
     setSelectedItem(item);
     setIsOpen(false);
   };
 
+  //this function dinamically changes and takes care of the value in the input field of the first value input
   const handleFirstInputChange = (text) => {
     setFirstValue(text);
   };
 
+  //this function dinamically changes and takes care of the value in the input field of the second value input
   const handleSecondInputChange = (text) => {
     setSecondValue(text);
   };
 
-  const sendToBackend = () => {
-    axios.post('http://localhost:3000', { firstValue, secondValue, operationValue: selectedItem?.value })
+  //asyncronus function that sends a post request to the server after user clicks a button which then sends the calculated result to the frontend
+  const sendToBackend = async () => {
+    await axios.post('http://localhost:3000', { firstValue, secondValue, operationValue: selectedItem?.value })
       .then(response => {
         console.log('Data sent to backend:', response.data);
         setResponseData(response.data); // Update state with response data
       })
       .catch(error => {
+        //basic error handling
         console.error('Error sending data to backend:', error);
       });
   };
-
+//ui rendering
   return (
     <View style={styles.container}>
       <TextInput
@@ -87,6 +97,7 @@ function App() {
   );
 }
 
+//css here
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -128,4 +139,5 @@ const styles = StyleSheet.create({
   },
 });
 
+//exporting the functional componenet
 export default App;
